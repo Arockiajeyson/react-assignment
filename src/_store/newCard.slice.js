@@ -4,7 +4,7 @@ import { history, fetchWrapper } from '_helpers';
 
 // create slice
 
-const name = 'auth';
+const name = 'newCard';
 const initialState = createInitialState();
 const reducers = createReducers();
 const extraActions = createExtraActions();
@@ -13,8 +13,8 @@ const slice = createSlice({ name, initialState, reducers, extraReducers });
 
 // exports
 
-export const authActions = { ...slice.actions, ...extraActions };
-export const authReducer = slice.reducer;
+export const newCardActions = { ...slice.actions, ...extraActions };
+export const newCardReducer = slice.reducer;
 
 // implementation
 
@@ -42,39 +42,38 @@ function createExtraActions() {
     const baseUrl = `${process.env.REACT_APP_API_URL}`;
 
     return {
-        login: login()
+        new:card()
     };    
 
-    function login() {
+    function card() {
         return createAsyncThunk(
-            `${name}/login`,
-            async ({ username, password }) => await fetchWrapper.post(`${baseUrl}/auth/login`, { email:username, password })
+            `${name}/newAdd`,
+            async ({ name,number,expiry}) => await fetchWrapper.post(`${baseUrl}/cards`, { name:`${name}'s card`,cardExpiration:expiry,cardHolder:name,cardNumber:number,category:'AE'})
         );
     }
 }
 
 function createExtraReducers() {
     return {
-        ...login()
+        ...card()
     };
 
-    function login() {
-        var { pending, fulfilled, rejected } = extraActions.login;
+    function card() {
+        var { pending, fulfilled, rejected } = extraActions.new;
         return {
             [pending]: (state) => {
                 state.error = null;
             },
             [fulfilled]: (state, action) => {
                 const user = action.payload;
-                
+                console.log(action.payload)
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('users', JSON.stringify(user));
-                localStorage.setItem('jwt',JSON.stringify(user.tokens.access.token))
+                // localStorage.setItem('users', JSON.stringify(user));
                 state.user = user;
 
                 // get return url from location state or default to home page
-                const { from } = history.location.state || { from: { pathname: '/' } };
-                history.navigate(from);
+                // const { from } = history.location.state || { from: { pathname: '/' } };
+                // history.navigate(from);
             },
             [rejected]: (state, action) => {
                 state.error = action.error;

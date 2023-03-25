@@ -4,6 +4,7 @@ function fakeBackend() {
     let users = [{ id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }];
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
+        console.log(url)
         return new Promise((resolve, reject) => {
             // wrap in timeout to simulate server api call
             setTimeout(handleRoute, 500);

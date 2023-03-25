@@ -9,6 +9,7 @@ export const fetchWrapper = {
 
 function request(method) {
     return (url, body) => {
+        // console.log(method)
         const requestOptions = {
             method,
             headers: authHeader(url)
@@ -36,7 +37,14 @@ function authHeader(url) {
 }
 
 function authToken() {
-    return store.getState().auth.user?.token;
+    const details = localStorage.getItem("users")
+    // console.log(details)
+    let d;
+    if(details){
+        d =JSON.parse(details).tokens.access.token
+        return d
+    }
+    return d
 }
 
 function handleResponse(response) {
